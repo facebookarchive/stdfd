@@ -148,3 +148,11 @@ func TestBothDifferent(t *testing.T) {
 		errpath: tempfilename(t, "-arg-stderr"),
 	})
 }
+
+func TestCreateDirectory(t *testing.T) {
+	t.Parallel()
+	run(t, Case{
+		outpath: filepath.Join(tempfilename(t, "-arg-stdout"), "out"),
+		errpath: filepath.Join(tempfilename(t, "-arg-stderr"), "err"),
+	})
+}

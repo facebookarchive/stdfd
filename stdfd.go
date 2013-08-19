@@ -9,7 +9,7 @@ import (
 )
 
 func dup2file(fd int, path string) error {
-	if err := os.MkdirAll(filepath.Dir(path), os.FileMode(0600)); err != nil {
+	if err := os.MkdirAll(filepath.Dir(path), os.FileMode(0700)); err != nil {
 		return err
 	}
 
