@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/daaku/go.stdfd"
+	"github.com/ParsePlatform/go.stdfd"
 )
 
 func main() {

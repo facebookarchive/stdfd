@@ -8,7 +8,7 @@ import (
 	"sync"
 	"testing"
 
-	"github.com/daaku/go.tool"
+	"github.com/ParsePlatform/go.tool"
 )
 
 // Make a temporary file.
@@ -57,7 +57,7 @@ var (
 // Build the test command and return the binary's path.
 func bin(t *testing.T) string {
 	binOnce.Do(func() {
-		const testcmd = "github.com/daaku/go.stdfd/stdfdtest"
+		const testcmd = "github.com/ParsePlatform/go.stdfd/stdfdtest"
 		binPath = tempfilename(t, filepath.Base(testcmd)+"-bin-")
 		options := tool.Options{
 			ImportPaths: []string{testcmd},
