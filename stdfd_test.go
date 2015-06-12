@@ -1,14 +1,15 @@
 package stdfd_test
 
 import (
+	"flag"
+	"fmt"
 	"io/ioutil"
 	"os"
 	"os/exec"
 	"path/filepath"
-	"sync"
 	"testing"
 
-	"github.com/facebookgo/tool"
+	"github.com/facebookgo/stdfd"
 )
 
 // Make a temporary file.
@@ -48,27 +49,23 @@ func checkcontents(t *testing.T, path string, content string) {
 	}
 }
 
-// Things to ensure we only build the binary once.
-var (
-	binOnce sync.Once
-	binPath string
-)
+const customMain = "CUSTOM_MAIN"
 
-// Build the test command and return the binary's path.
-func bin(t *testing.T) string {
-	binOnce.Do(func() {
-		const testcmd = "github.com/facebookgo/stdfd/stdfdtest"
-		binPath = tempfilename(t, filepath.Base(testcmd)+"-bin-")
-		options := tool.Options{
-			ImportPaths: []string{testcmd},
-			Output:      binPath,
-		}
-		_, err := options.Command("build")
-		if err != nil {
-			t.Fatal(err)
-		}
-	})
-	return binPath
+var customMainEnv = []string{customMain + "=1"}
+
+func TestMain(m *testing.M) {
+	if os.Getenv(customMain) == "" {
+		os.Exit(m.Run())
+	}
+
+	out := flag.String("out", "", "out text")
+	err := flag.String("err", "", "err text")
+	stdout := flag.String("stdout", "", "stdout path")
+	stderr := flag.String("stderr", "", "stderr path")
+	flag.Parse()
+	stdfd.RedirectOutputs(*stdout, *stderr)
+	fmt.Fprint(os.Stdout, *out)
+	fmt.Fprint(os.Stderr, *err)
 }
 
 type Case struct {
@@ -95,12 +92,13 @@ func run(t *testing.T, c Case) {
 	}
 
 	cmd := exec.Command(
-		bin(t),
+		os.Args[0],
 		"-stdout", c.outpath,
 		"-stderr", c.errpath,
 		"-out", outText,
 		"-err", errText,
 	)
+	cmd.Env = customMainEnv
 	cmd.Stdout = givenStdout
 	cmd.Stderr = givenStderr
 	if err := cmd.Run(); err != nil {

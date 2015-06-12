@@ -34,7 +34,7 @@ func dup2file(fd int, path string) error {
 	return nil
 }
 
-// RedirectOutputs (os.Stdout & os.Stderr) if necessary. There are some
+// Redirect outputs (os.Stdout & os.Stderr) if necessary. There are some
 // special implications here:
 //
 // - Both arguments are paths.
